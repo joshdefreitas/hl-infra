@@ -115,4 +115,6 @@ pipeline {
         failure { 
             echo "VM creation failed. Check the logs for details." 
         } 
+
+    }    
 }

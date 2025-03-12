@@ -29,10 +29,10 @@ pipeline {
             steps {
                 sh '''
                 echo "Testing connectivity to Proxmox..."
-                ping -c 3 ${params.PROXMOX_HOST} || echo "Ping failed but continuing"
+                ping -c 3 ''' + params.PROXMOX_HOST + ''' || echo "Ping failed but continuing"
                 
                 echo "Testing API access..."
-                curl -k -s -o /dev/null -w "Proxmox API HTTP Status: %{http_code}\n" https://${params.PROXMOX_HOST}:8006/ || echo "API check failed but continuing"
+                curl -k -s -o /dev/null -w "Proxmox API HTTP Status: %{http_code}\\n" https://''' + params.PROXMOX_HOST + ''':8006/ || echo "API check failed but continuing"
                 '''
             }
         }

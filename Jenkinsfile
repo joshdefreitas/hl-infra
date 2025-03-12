@@ -80,12 +80,41 @@ pipeline {
         }
     }
     
-    post {
-        success {
-            echo "VM creation successful! VM '${params.VM_NAME}' has been created with IP ${params.VM_IP}"
+ post { 
+        always {
+            echo "Cleaning up Docker resources and workspace..."
+            sh '''
+                # Print disk usage before cleanup
+                echo "Disk usage before cleanup:"
+                df -h /
+                
+                # Cleanup Docker resources
+                echo "Cleaning Docker resources..."
+                docker system prune -af --volumes || true
+                
+                # Print disk usage after cleanup
+                echo "Disk usage after cleanup:"
+                df -h /
+                
+                # Remove Terraform temporary files if they exist
+                if [ -d "terraform" ]; then
+                    cd terraform
+                    rm -f terraform.tfstate.backup tfplan
+                    cd ..
+                fi
+                
+                # Clean workspace
+                rm -rf .terraform
+            '''
+            
+            cleanWs notFailBuild: true
         }
-        failure {
-            echo "VM creation failed. Check the logs for details."
-        }
+        
+        success { 
+            echo "VM creation successful! VM '${params.VM_NAME}' has been created with IP ${params.VM_IP}" 
+        } 
+        failure { 
+            echo "VM creation failed. Check the logs for details." 
+        } 
     }
 }

@@ -82,20 +82,14 @@ pipeline {
         }
     }
     
- post { 
+post { 
         always {
             echo "Cleaning up Docker resources and workspace..."
+            
+            // First, clean up inside the container
             sh '''
                 # Print disk usage before cleanup
                 echo "Disk usage before cleanup:"
-                df -h /
-                
-                # Cleanup Docker resources
-                echo "Cleaning Docker resources..."
-                docker system prune -af --volumes || true
-                
-                # Print disk usage after cleanup
-                echo "Disk usage after cleanup:"
                 df -h /
                 
                 # Remove Terraform temporary files if they exist
@@ -108,6 +102,22 @@ pipeline {
                 # Clean workspace
                 rm -rf .terraform
             '''
+            
+            // Now exit the container and run docker system prune on the host
+            script {
+                // This exits the container and runs commands on the Jenkins agent
+                node {
+                    echo "Running Docker cleanup on DinD host..."
+                    sh '''
+                        # Cleanup Docker resources on the host
+                        docker system prune -af --volumes || true
+                        
+                        # Print disk usage after cleanup
+                        echo "Disk usage after cleanup:"
+                        df -h /
+                    '''
+                }
+            }
             
             cleanWs notFailBuild: true
         }

@@ -105,15 +105,8 @@ pipeline {
             
             cleanWs notFailBuild: true
             
-            // Now run Docker cleanup directly on the Jenkins agent outside the container
-            sh '''#!/bin/bash
-                # Exit the container context and run on the Jenkins agent
-                # Note: This runs after the container is stopped
-                echo "Running Docker cleanup..."
-                docker system prune -af --volumes || echo "Docker prune failed, but continuing"
-                echo "Disk usage after cleanup:"
-                df -h /
-            '''
+            // Trigger the Docker cleanup job
+            build job: 'docker-cleanup', wait: false, propagate: false
         }
         
         success { 
@@ -122,5 +115,4 @@ pipeline {
         failure { 
             echo "VM creation failed. Check the logs for details." 
         } 
-    }
 }

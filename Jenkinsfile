@@ -3,6 +3,8 @@ pipeline {
         dockerfile {
             filename 'Dockerfile.agent'
             additionalBuildArgs '--no-cache'
+            reuseNode true    
+            args '-v /tmp:/tmp'
         }
     }
     
@@ -40,7 +42,7 @@ pipeline {
         stage('Terraform Init') {
             steps {
                 dir('terraform') {
-                    sh 'terraform init'
+                    sh 'terraform init -upgrade'
                 }
             }
         }

@@ -24,7 +24,7 @@ variable "proxmox_node" {
 variable "template_name" {
   type = string
   description = "Name of the VM template to clone"
-  default = "ubuntu-cloud-template"
+  default = "ubuntu-server-template"
 }
 
 variable "vm_name" {

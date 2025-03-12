@@ -18,17 +18,24 @@ resource "proxmox_vm_qemu" "test_vm" {
   name = var.vm_name
   target_node = var.proxmox_node
   
+  # If template_name is a name (string), this is fine
+  # If it's a numeric ID, make sure var.template_name is defined as a number
   clone = var.template_name
   
-  # VM settings
+  # VM settings - these look good as numbers
   cores = 2
   sockets = 1
   memory = 2048
+  
+  # Add agent parameter explicitly as a number
+  agent = 1
   
   # Network
   network {
     bridge = "vmbr0"
     model = "virtio"
+    # Explicitly set any numeric parameters
+    tag = -1  # If not using VLAN tagging
   }
   
   # Cloud-init settings

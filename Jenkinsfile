@@ -82,17 +82,17 @@ pipeline {
         }
     }
     
-post { 
+    post { 
         always {
-            echo "Cleaning up Docker resources and workspace..."
+            echo "Cleaning up workspace..."
             
-            // First, clean up inside the container
+            // Clean up Terraform files inside the container
             sh '''
-                # Print disk usage before cleanup
-                echo "Disk usage before cleanup:"
+                # Print disk usage
+                echo "Disk usage:"
                 df -h /
                 
-                # Remove Terraform temporary files if they exist
+                # Remove Terraform temporary files
                 if [ -d "terraform" ]; then
                     cd terraform
                     rm -f terraform.tfstate.backup tfplan
@@ -103,23 +103,17 @@ post {
                 rm -rf .terraform
             '''
             
-            // Now exit the container and run docker system prune on the host
-            script {
-                // This exits the container and runs commands on the Jenkins agent
-                node {
-                    echo "Running Docker cleanup on DinD host..."
-                    sh '''
-                        # Cleanup Docker resources on the host
-                        docker system prune -af --volumes || true
-                        
-                        # Print disk usage after cleanup
-                        echo "Disk usage after cleanup:"
-                        df -h /
-                    '''
-                }
-            }
-            
             cleanWs notFailBuild: true
+            
+            // Now run Docker cleanup directly on the Jenkins agent outside the container
+            sh '''#!/bin/bash
+                # Exit the container context and run on the Jenkins agent
+                # Note: This runs after the container is stopped
+                echo "Running Docker cleanup..."
+                docker system prune -af --volumes || echo "Docker prune failed, but continuing"
+                echo "Disk usage after cleanup:"
+                df -h /
+            '''
         }
         
         success { 

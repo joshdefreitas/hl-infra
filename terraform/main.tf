@@ -28,7 +28,7 @@ resource "proxmox_vm_qemu" "test_vm" {
   agent = 1
   
   # Use the flat disk format instead of nested
-  disk {
+  disks {
     type = "scsi"
     storage = "local-lvm"
     size = "20G"

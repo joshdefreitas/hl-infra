@@ -27,7 +27,7 @@ resource "proxmox_vm_qemu" "test_vm" {
   agent = 1
   
   # Add disk configuration
-  disk {
+  disks {
     type = "scsi"
     storage = "local-lvm"  # Replace with your actual storage pool name
     size = "20G"

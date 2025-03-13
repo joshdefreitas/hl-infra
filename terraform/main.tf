@@ -34,7 +34,6 @@ resource "proxmox_vm_qemu" "test_vm" {
     size     = "20G"
     iothread = 1
     scsihw   = "virtio-scsi-pci"
-    emulatessd = 1
   }
 
   

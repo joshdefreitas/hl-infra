@@ -28,15 +28,15 @@ resource "proxmox_vm_qemu" "test_vm" {
   agent = 1
   
   # Use the flat disk format instead of nested
-  disks {
-    type = "scsi"
-    storage = "local-lvm"
-    size = "20G"
+  disk {
+    type     = "scsi"
+    storage  = "local-lvm"
+    size     = "20G"
     iothread = 1
-    scsihw = "virtio-scsi-pci"
-    # Note: no ssd parameter, use emulatessd instead if needed
+    scsihw   = "virtio-scsi-pci"
     emulatessd = 1
   }
+
   
   # Boot configuration
   boot = "order=scsi0;net0"

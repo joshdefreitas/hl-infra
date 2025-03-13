@@ -106,8 +106,6 @@ pipeline {
             '''
             
             cleanWs notFailBuild: true
-            
-            // Trigger the Docker cleanup job
             build job: 'docker-cleanup', wait: false, propagate: false
         }
         

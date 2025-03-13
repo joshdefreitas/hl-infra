@@ -18,6 +18,8 @@ pipeline {
         PROXMOX_API_TOKEN_ID = credentials('proxmox-token-id')
         PROXMOX_API_TOKEN_SECRET = credentials('proxmox-token-secret')
         SSH_PUBLIC_KEY = credentials('homelab-ssh-public-key')
+        TF_LOG = 'DEBUG'
+        TF_LOG_PATH = 'terraform-debug.log'
     }
     
     stages {

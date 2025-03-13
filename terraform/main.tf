@@ -26,12 +26,11 @@ resource "proxmox_vm_qemu" "test_vm" {
   
   agent = 1
   
-  # Add disk configuration
-  disks {
-    type = "scsi"
+  disk {
     storage = "local-lvm"  # Replace with your actual storage pool name
-    size = "20G"
-    scsihw = "virtio-scsi-pci"
+    size    = "20G"
+    type    = "scsi"
+    format  = "qcow2"  # Optional, specify the format if needed
   }
   
   # Set boot order

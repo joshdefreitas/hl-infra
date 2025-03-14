@@ -16,50 +16,54 @@ provider "proxmox" {
 }
 
 resource "proxmox_vm_qemu" "test_vm" {
-  name                      = var.vm_name
-  desc                      = "VM created via Terraform"
-  target_node               = var.proxmox_node
+  name        = var.vm_name
+  desc        = "VM created via Terraform"
+  target_node = var.proxmox_node
   
   # Clone from template
-  clone                     = var.template_name
+  clone       = var.template_name
   
   # VM settings
-  agent                     = 1
-  automatic_reboot          = true
-  balloon                   = 0
-  bios                      = "seabios"
-  boot                      = "order=scsi0;net0"
-  cores                     = 2
-  cpu_type                  = "host"
-  define_connection_info    = true
-  force_create              = false
-  hotplug                   = "network,disk,usb"
-  kvm                       = true
-  memory                    = 2048
-  numa                      = false
-  onboot                    = false
-  scsihw                    = "virtio-scsi-pci"
-  sockets                   = 1
+  agent                  = 1
+  automatic_reboot       = true
+  balloon                = 0
+  bios                   = "seabios"
+  boot                   = "order=scsi0;net0"
+  cores                  = 2
+  define_connection_info = true
+  force_create           = false
+  hotplug                = "network,disk,usb"
+  memory                 = 2048
+  numa                   = false
+  onboot                 = false
+  scsihw                 = "virtio-scsi-pci"
+  sockets                = 1
   
-  # Disk configuration
-  disk {
-    backup            = true
-    cache             = "none"
-    discard           = true
-    iothread          = true
-    size              = 20
-    storage           = "local-lvm"
+  # Disk configuration - using disks block instead of disk
+  disks {
+    scsi {
+      scsi0 {
+        disk {
+          backup   = true
+          cache    = "none"
+          discard  = true
+          iothread = true
+          size     = "20G"
+          storage  = "local-lvm"
+        }
+      }
+    }
   }
   
   # Network configuration
   network {
-    bridge                  = "vmbr0"
-    model                   = "virtio"
-    firewall                = false
+    bridge   = "vmbr0"
+    model    = "virtio"
+    firewall = false
   }
   
   # Cloud-init settings
-  os_type                   = "cloud-init"
-  ipconfig0                 = "ip=${var.vm_ip}/24,gw=${var.gateway}"
-  sshkeys                   = var.ssh_public_key
+  os_type    = "cloud-init"
+  ipconfig0  = "ip=${var.vm_ip}/24,gw=${var.gateway}"
+  sshkeys    = var.ssh_public_key
 }

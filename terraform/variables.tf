@@ -40,7 +40,7 @@ variable "vm_ip" {
 variable "gateway" {
   type = string
   description = "Network gateway"
-  default = "192.168.1.1"
+  default = "192.168.1.254"
 }
 
 variable "ssh_public_key" {

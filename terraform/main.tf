@@ -42,20 +42,13 @@ resource "proxmox_vm_qemu" "test_vm" {
   sockets                   = 1
   
   # Disk configuration
-  disks {
-    scsi {
-      scsi0 {
-        disk {
-          backup            = true
-          cache             = "none"
-          discard           = true
-          emulatessd        = true
-          iothread          = true
-          size              = 20
-          storage           = "local-lvm"
-        }
-      }
-    }
+  disk {
+    backup            = true
+    cache             = "none"
+    discard           = true
+    iothread          = true
+    size              = 20
+    storage           = "local-lvm"
   }
   
   # Network configuration
